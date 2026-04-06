@@ -621,12 +621,37 @@ textarea.form-input {
   }
 
   /* Mobile adjustments */
-  @media (max-width: 700px) {
-    .stories-main {
-      flex-direction: column;
-      justify-content: center;
-      gap: 80px;
-    }
+
+  /* Stories Page Mobile Padding */
+  
+  .video-section {
+    padding: 0 20px; /* Side padding for the player */
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .video-header-above {
+    padding: 0 5px; /* Extra breathing room for the title */
+    margin-bottom: 12px;
+  }
+
+  .video-header-above h3 {
+    font-size: 1.4rem; /* Downsized for small screens */
+    line-height: 1.3;
+  }
+
+  .content-list {
+    padding: 0 20px 60px; /* Aligns list with video padding */
+  }
+
+  .list-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--grey-light);
+  }
+  
+  /* Ensures the iframe doesn't overflow */
+  .iframe-wrapper {
+    margin-bottom: 24px;
   }
 
 
@@ -642,6 +667,15 @@ textarea.form-input {
     grid-template-columns: 1fr;
     gap: 36px;
     padding: 36px 24px 32px;
+  }
+    /* Mobile Back Button Padding */
+  .back-link {
+  display: inline-block;
+  margin: 20px 60px 10px; /* Top: 20px, Sides: 20px, Bottom: 10px */
+  padding: 16px 0; /* Adds vertical touch area */
+  margin-bottom: 8px;
+  font-weight: 500;
+    }
   }
 
   .hero-intro { font-size: 26px; margin-bottom: 28px; }
@@ -662,4 +696,35 @@ textarea.form-input {
   .page-header { padding: 40px 24px 28px; }
   .page-title  { font-size: 32px; }
   .page-content { padding: 8px 24px 52px; }
-}
+
+/* # MOBILE FIXES
+   ---------------------------------------------------------- */
+   @media (max-width: 700px) {
+    /* Navigation & Hero */
+    .nav { padding: 16px 24px; }
+    .nav-links { gap: 20px; }
+    .hero { grid-template-columns: 1fr; gap: 36px; padding: 36px 24px 32px; }
+    .hero-intro { font-size: 26px; margin-bottom: 28px; }
+  
+    /* Section Spacing */
+    .who, .creative, .contact { padding: 40px 24px; }
+    .creative-cols, .contact-form { grid-template-columns: 1fr; gap: 36px; }
+  
+    /* Stories Page Specifics */
+    .page-header { padding: 40px 24px 10px; }
+    .page-content { padding: 8px 24px 52px; }
+    
+    /* The Back Button Fix */
+    .back-link {
+      display: inline-block !important;
+      padding: 12px 24px !important; /* Internal hit area */
+      transform: translateX(24px) !important; /* Forces it 24px from the left */      font-weight: 500;
+      text-decoration: none;
+    }
+  
+    .video-section, .content-list {
+      padding: 0 24px; /* Matches the nav and header padding */
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
