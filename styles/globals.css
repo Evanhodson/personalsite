@@ -436,12 +436,40 @@ textarea.form-input {
     position: relative;
   }
   
+  .blog-body-text {
+    max-width: 600px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--black);
+    margin-top: 20px;
+    text-align: left;
+  }
   .header-container {
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 1.0s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
   }
+
+  /* # BUTTON SPACING FIX */
+
+.button-group {
+  display: flex;
+  gap: 70px; /* Increase this to widen the gap between words */
+  align-items: center;
+  justify-content: center;
+}
+
+/* Update these to match half of the 180px gap (90px) */
+.story-btn:first-child.selected { 
+  transform: translateX(calc(90px + 50%)); 
+  color: var(--grey-soft); 
+}
+
+.story-btn:last-child.selected { 
+  transform: translateX(calc(-90px - 50%)); 
+  color: var(--grey-soft); 
+}
   
   /* Category header (Videos/Written) stays at the very top */
   .is-active .header-container {
@@ -473,7 +501,7 @@ textarea.form-input {
     opacity: 1;
     pointer-events: auto;
     /* Delayed fade-in for premium feel, but snappy movement */
-    transition: opacity 1.5s ease 0.9s, transform 1.0s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 1.2s ease 0.4s, transform 1.0s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   /* MOVES DOWN: To align with the specific video title (Storm the Wall) */

@@ -1,12 +1,28 @@
 'use client'
 
-import { useState } from 'react'
-import Nav from '../../components/Nav.js'
-import { videos, written } from '../../lib/data.js' // Import shared data
+'use client'
 
-export default function StoriesPage() {
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+import Nav from '../../components/Nav'
+import { videos, written } from '../../lib/data'
+
+export function StoriesContent() {
   const [active, setActive] = useState(null)
   const [selectedVideo, setSelectedVideo] = useState(null)
+
+  const searchParams = useSearchParams()
+
+useEffect(() => {
+  const type = searchParams.get('type')
+  const id = searchParams.get('id')
+
+  if (type === 'videos' && id) {
+    setActive('videos')
+    const found = videos.find(v => v.id === id)
+    if (found) setSelectedVideo(found)
+  }
+}, [searchParams])
 
   // handleBack logic
   const handleBack = () => {
@@ -59,11 +75,11 @@ export default function StoriesPage() {
               </div>
               <div className="iframe-wrapper">
                 <iframe
-                  src={`https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
+                   src={`https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1&mute=1&rel=0`}
+                   allow="autoplay; encrypted-media"
+                   allowFullScreen
+                   frameBorder="0"
+                 ></iframe>
               </div>
             </div>
           )}
@@ -87,5 +103,12 @@ export default function StoriesPage() {
         </div>
       </main>
     </div>
+  )
+}
+export default function StoriesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <StoriesContent />
+    </Suspense>
   )
 }
