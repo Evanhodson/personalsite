@@ -2,12 +2,13 @@
 import Nav from '../components/Nav' // Fixed: Correct import
 import Slideshow from '../components/Slideshow'
 import Contact from '../components/Contact'
-import { videos, written } from '../lib/data'
+import { getYouTubeVideos } from '../lib/getVideos'
 import { getSubstackPosts } from '../lib/getBlogs' // Add this line
 
 export default async function Page() {
-  const topVideos = videos.slice(0, 3);
-  const topWritten = written.slice(0, 3);
+  const videoData = await getYouTubeVideos();
+   // 2. Target the videos array inside the object to use slice
+   const topVideos = (videoData.videos || []).slice(0, 3);
   const allPosts = await getSubstackPosts();
   const recentPosts = allPosts.slice(0, 3); // This picks the top 3 most recent posts from Substack
   return (
@@ -63,14 +64,14 @@ I live for moments and memories. For making connections with the people around m
     <div className="col">
       <h3 className="col-head warm">Blogs</h3>
       {recentPosts.map((post) => (
-  <a 
-    key={post.slug} 
-    href={`/stories?type=written&slug=${post.slug}`} // Point to your local page
-    className="col-item"
-  >
-    {post.title}
-  </a>
-))}
+         <a 
+           key={post.slug} 
+           href={`/stories?type=written&slug=${post.slug}`} // Point to your local page
+           className="col-item"
+           >
+           {post.title}
+          </a>
+        ))}
     </div>
 
     {/* Other Column - Stays the same */}

@@ -1,5 +1,7 @@
 // This path assumes: app/api/blogs/route.js
 // Going up 3 levels: blogs -> api -> app -> (now you are in the root)
+export const revalidate = 3600; // Refreshes the cache every 1 hour
+
 import { getSubstackPosts } from '../../../lib/getBlogs'; 
 import { NextResponse } from 'next/server';
 

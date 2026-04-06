@@ -3,11 +3,10 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Nav from '../../components/Nav'
-import { videos } from '../../lib/data'
-
 export function StoriesContent() {
   const [active, setActive] = useState(null)
   const [selectedVideo, setSelectedVideo] = useState(null)
+  const [liveVideos, setLiveVideos] = useState([])
   const [substackPosts, setSubstackPosts] = useState([]) 
   const [selectedBlog, setSelectedBlog] = useState(null) 
   const [loading, setLoading] = useState(false)
@@ -16,21 +15,27 @@ export function StoriesContent() {
 
   // Fetch Substack posts via Internal API
   useEffect(() => {
-    const loadBlogs = async () => {
+    const loadContent = async () => {
       setLoading(true)
       try {
-        const response = await fetch('/api/blogs')
-        const posts = await response.json()
-        if (Array.isArray(posts)) {
-          setSubstackPosts(posts)
-        }
+        // Fetch both at once
+        const [blogRes, videoRes] = await Promise.all([
+          fetch('/api/blogs'),
+          fetch('/api/videos')
+        ])
+        
+        const blogs = await blogRes.json()
+        const vids = await videoRes.json()
+        
+        setSubstackPosts(blogs)
+        setLiveVideos(vids)
       } catch (err) {
-        console.error("Error loading blogs:", err)
+        console.error("Error loading content:", err)
       } finally {
         setLoading(false)
       }
     }
-    loadBlogs()
+    loadContent()
   }, [])
 
   useEffect(() => {
@@ -40,14 +45,15 @@ export function StoriesContent() {
 
     if (type === 'videos' && id) {
       setActive('videos')
-      const found = videos.find(v => v.id === id)
+      // Change 'videos' to 'liveVideos'
+      const found = liveVideos.find(v => v.id === id)
       if (found) setSelectedVideo(found)
     } else if (type === 'written' && slug) {
       setActive('written')
       const foundBlog = substackPosts.find(p => p.slug === slug)
       if (foundBlog) setSelectedBlog(foundBlog)
     }
-  }, [searchParams, substackPosts])
+  }, [searchParams, substackPosts, liveVideos]) // Added liveVideos here
 
   const handleBack = () => {
     if (selectedVideo) setSelectedVideo(null)
@@ -56,8 +62,9 @@ export function StoriesContent() {
   }
 
   const displayList = active === 'videos' 
-    ? (selectedVideo ? videos.filter(v => v.id !== selectedVideo.id) : videos)
-    : (selectedBlog ? substackPosts.filter(p => p.slug !== selectedBlog.slug) : substackPosts)
+  // Change 'videos' to 'liveVideos' here
+  ? (selectedVideo ? liveVideos.filter(v => v.id !== selectedVideo.id) : liveVideos)
+  : (selectedBlog ? substackPosts.filter(p => p.slug !== selectedBlog.slug) : substackPosts)
 
   return (
     <div className="stories-container">
@@ -123,29 +130,32 @@ export function StoriesContent() {
             </div>
           )}
 
-          {/* List of Titles - Only shows if NO content is selected */}
-          {active && !selectedVideo && !selectedBlog && (
-            <div className="content-list">
-              {loading && substackPosts.length === 0 ? (
-                <p>Loading stories...</p>
-              ) : (
-                displayList.map((item, i) => (
-                  <div 
-                    key={i} 
-                    className="list-item" 
-                    onClick={() => {
-                      if (active === 'videos') setSelectedVideo(item);
-                      else setSelectedBlog(item);
-                    }}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <span className="item-title-link">{item.title}</span>
-                    <span className="item-date">{item.date}</span>
-                  </div>
-                ))
-              )}
-            </div>
-          )}
+          {/* List of Titles - Shows as a sub-list when content is selected */}
+{active && (
+  <div className={`content-list ${selectedVideo || selectedBlog ? 'sub-list' : ''}`}>
+    {loading && substackPosts.length === 0 ? (
+      <p>Loading stories...</p>
+    ) : (
+      displayList.map((item, i) => (
+        <div 
+          key={i} 
+          className="list-item" 
+          onClick={() => {
+            if (active === 'videos') setSelectedVideo(item);
+            else setSelectedBlog(item);
+            // Optional: scroll to top when a new video is clicked
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          style={{ cursor: 'pointer' }}
+        >
+          <span className="item-title-link">{item.title}</span>
+          <span className="item-date">{item.date}</span>
+        </div>
+      ))
+    )}
+  </div>
+)}
+        
         </div>
       </main>
 

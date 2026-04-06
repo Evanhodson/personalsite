@@ -5,8 +5,8 @@
 export default function Contact() {
   return (
     <section className="contact">
-      <h2 className="contact-heading">Send me a message :)</h2>
-      <p className="contact-sub">I try to reply to everything. No pitch, just say hi.</p>
+      <h2 className="contact-heading">Send me a message : </h2>
+      <p className="contact-sub"> Questions, thoughts, anything</p>
 
       <form className="contact-form" onSubmit={e => e.preventDefault()}>
         <div className="form-group">
