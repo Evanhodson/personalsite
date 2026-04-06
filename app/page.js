@@ -3,11 +3,13 @@ import Nav from '../components/Nav' // Fixed: Correct import
 import Slideshow from '../components/Slideshow'
 import Contact from '../components/Contact'
 import { videos, written } from '../lib/data'
+import { getSubstackPosts } from '../lib/getBlogs' // Add this line
 
-export default function Page() {
+export default async function Page() {
   const topVideos = videos.slice(0, 3);
   const topWritten = written.slice(0, 3);
-
+  const allPosts = await getSubstackPosts();
+  const recentPosts = allPosts.slice(0, 3); // This picks the top 3 most recent posts from Substack
   return (
     <>
       <Nav />
@@ -44,26 +46,41 @@ I live for moments and memories. For making connections with the people around m
       </section>
 
       <section className="creative">
-        <h2 className="creative-label">Creative</h2>
-        <div className="creative-cols">
-          <div className="col">
-            <h3 className="col-head cool">Vlogs</h3>
-            {topVideos.map((v) => (
-              <a key={v.id} href={`/stories?type=videos&id=${v.id}`} className="col-item">{v.title}</a>
-            ))}
-          </div>
-          <div className="col">
-            <h3 className="col-head warm">Blogs</h3>
-            {topWritten.map((b) => (
-              <a key={b.title} href={`/stories?type=written&title=${encodeURIComponent(b.title)}`} className="col-item">{b.title}</a>
-            ))}
-          </div>
-          <div className="col">
-            <h3 className="col-head green">Other</h3>
-            <a href="https://ubcsimplified.com" className="col-item">UBC Simplified</a>
-          </div>
-        </div>
-      </section>
+  <h2 className="creative-label">Creative</h2>
+  <div className="creative-cols">
+    
+    {/* Vlogs Column - Stays the same */}
+    <div className="col">
+      <h3 className="col-head cool">Vlogs</h3>
+      {topVideos.map((v) => (
+        <a key={v.id} href={`/stories?type=videos&id=${v.id}`} className="col-item">
+          {v.title}
+        </a>
+      ))}
+    </div>
+
+    {/* Blogs Column - UPDATED for Substack */}
+    <div className="col">
+      <h3 className="col-head warm">Blogs</h3>
+      {recentPosts.map((post) => (
+  <a 
+    key={post.slug} 
+    href={`/stories?type=written&slug=${post.slug}`} // Point to your local page
+    className="col-item"
+  >
+    {post.title}
+  </a>
+))}
+    </div>
+
+    {/* Other Column - Stays the same */}
+    <div className="col">
+      <h3 className="col-head green">Other</h3>
+      <a href="https://ubcsimplified.com" className="col-item">UBC Simplified</a>
+    </div>
+    
+  </div>
+</section>
       <Contact />
     </>
   );

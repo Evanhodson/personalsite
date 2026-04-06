@@ -728,3 +728,81 @@ textarea.form-input {
       box-sizing: border-box;
     }
   }
+
+  /* --- Substack Blog Overrides --- */
+
+.blog-section {
+  max-width: 750px; /* Optimal reading width */
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.blog-main-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.blog-date {
+  font-size: 0.9rem;
+  color: #666;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+}
+
+/* This targets the raw HTML coming from Substack */
+.substack-embed-content {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #222;
+}
+
+.substack-embed-content p {
+  margin-bottom: 24px;
+}
+
+.substack-embed-content img {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 12px;
+  margin: 40px 0;
+  display: block;
+}
+
+.substack-embed-content h2, 
+.substack-embed-content h3 {
+  margin-top: 45px;
+  margin-bottom: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Mobile Fixes */
+@media (max-width: 640px) {
+  .blog-main-title {
+    font-size: 1.8rem;
+  }
+  
+  .substack-embed-content {
+    font-size: 1.05rem;
+  }
+
+  .stories-layout {
+    padding: 0 24px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .stories-container, 
+  .stories-layout, 
+  .view-content,
+  .blog-section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
