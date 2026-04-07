@@ -77,7 +77,10 @@ I live for moments and memories. For making connections with the people around m
     {/* Other Column - Stays the same */}
     <div className="col">
       <h3 className="col-head green">Other</h3>
-      <a href="https://ubcsimplified.com" className="col-item">UBC Simplified</a>
+      <a href="https://www.instagram.com/hodson.events/" className="col-item">Hodson Events</a>
+      <a href="https://www.youtube.com/@UBCsimplified" className="col-item">UBC Simplified</a>
+      <a href="/athletics" className="col-item">Athletics</a>
+
     </div>
     
   </div>
