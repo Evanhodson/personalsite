@@ -46,9 +46,9 @@ export default function Slideshow() {
             src={slides[current].src} 
             alt={slides[current].alt} 
             fill
-            style={{ objectFit: 'cover', transition: 'opacity 0.5s ease-in-out' }}
+            style={{ objectFit: 'cover' }}
             className="slide-img"
-            priority={current === 0} 
+            priority={true} 
             sizes="(max-width: 768px) 100vw, 500px"
           />
         </div>
