@@ -37,31 +37,57 @@ export default function Slideshow() {
   }, [current, isHovered])
 
   return (
-    <div className="slideshow-wrap" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+    <div className="slideshow-wrap">
       <p className="slide-eyebrow">Some things I&apos;ve done...</p>
+ 
       <div className="slide-box">
         <button className="slide-arr" onClick={prev} aria-label="Previous">‹</button>
-        <div className="slide-img-wrap" style={{ position: 'relative', width: '100%', height: '100%' }}>
-          <Image 
-            src={slides[current].src} 
-            alt={slides[current].alt} 
-            fill
-            style={{ objectFit: 'cover' }}
-            className="slide-img"
-            priority={true} 
-            sizes="(max-width: 768px) 100vw, 500px"
-          />
+ 
+        {/* # IMAGE STACK
+            All images sit in the same position.
+            Only the active one has opacity 1 — the rest are opacity 0.
+            CSS transition handles the crossfade. No remounting, no flicker. */}
+        <div className="slide-img-wrap">
+          {slides.map((slide, i) => (
+            <div
+              key={slide.src}
+              className="slide-img-layer"
+              style={{ opacity: i === current ? 1 : 0 }}
+            >
+              <Image
+                src={slide.src}
+                alt={slide.alt}
+                fill
+                sizes="(max-width: 768px) 100vw, 500px"
+                style={{ objectFit: 'cover' }}
+                priority={i === 0}
+                loading="eager"
+              />
+            </div>
+          ))}
         </div>
+ 
         <button className="slide-arr" onClick={next} aria-label="Next">›</button>
       </div>
-
+ 
       <div className="slide-dots">
         {slides.map((_, i) => (
-          <button key={i} className={`slide-dot${i === current ? ' active' : ''}`} onClick={() => setCurrent(i)} aria-label={`Slide ${i + 1}`} />
+          <button
+            key={i}
+            className={`slide-dot${i === current ? ' active' : ''}`}
+            onClick={() => setCurrent(i)}
+            aria-label={`Slide ${i + 1}`}
+          />
         ))}
       </div>
-
-      <p className="slide-caption" style={{ transition: 'opacity 0.5s ease-in-out' }}>{slides[current].caption}</p>
+ 
+      {/* # CAPTION — only the active caption renders, min-height holds the space */}
+      <div className="slide-caption-wrap">
+        <p className="slide-caption active">
+          {slides[current].caption}
+        </p>
+      </div>
     </div>
   )
 }
+ 

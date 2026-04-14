@@ -22,9 +22,14 @@ export default async function Page() {
           </h1>
           <div className="currently">
             <p className="currently-title">Currently...</p>
-            <p className="cur-line">Where I am <span style={{ marginLeft: 80 }}>Vancouver</span></p>
-            <p className="cur-line">What I am reading <span style={{ marginLeft: 18 }}>Brave new world</span></p>
-            <p className="cur-line">What I am doing <span style={{ marginLeft: 34 }}>Resting at home</span></p>
+            <div className="cur-grid">
+              <span className="cur-label">Where I am</span>
+              <span className="cur-value">Vancouver</span>
+              <span className="cur-label">What I am reading</span>
+              <span className="cur-value">Text Messages</span>
+              <span className="cur-label">What I am doing</span>
+              <span className="cur-value">Studying for finals inside all the time</span>
+            </div>
           </div>
         </div>
         <div className="hero-right">
@@ -54,7 +59,7 @@ I live for moments and memories. For making connections with the people around m
     <div className="col">
       <h3 className="col-head cool">Vlogs</h3>
       {topVideos.map((v) => (
-        <a key={v.id} href={`/stories?type=videos&id=${v.id}`} className="col-item">
+        <a key={v.id} href={`/stories?type=videos&id=${v.id}&auto=videos`} className="col-item">
           {v.title}
         </a>
       ))}
@@ -66,7 +71,7 @@ I live for moments and memories. For making connections with the people around m
       {recentPosts.map((post) => (
          <a 
            key={post.slug} 
-           href={`/stories?type=written&slug=${post.slug}`} // Point to your local page
+           href={`/stories?type=written&slug=${post.slug}&auto=written`} // Point to your local page
            className="col-item"
            >
            {post.title}
