@@ -1103,3 +1103,189 @@
        font-size: 16px;
      }
    }
+
+/* ============================================================
+   # PEOPLE PAGE
+   Paste this block anywhere in globals.css — suggested spot
+   is after the # BOOKS section.
+   ============================================================ */
+
+/* Layout */
+.people-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 60px 80px;
+}
+
+/* Header */
+.people-header {
+  text-align: center;
+  padding: 56px 0 52px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.people-heading {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--black);
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.people-quote {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--grey-soft);
+  line-height: 1.75;
+  margin-bottom: 10px;
+}
+
+.people-sub {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--grey-mid);
+  letter-spacing: 0.02em;
+}
+
+/* ---- GRID ---- 
+   align-items: start so cards don't stretch to match their 
+   row-neighbour when one expands with a long bio. */
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px 32px;
+  align-items: start;
+}
+
+/* ---- CARD ---- */
+.person-card {
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  animation: personFadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes personFadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Photo */
+.person-photo-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--grey-faint);
+}
+
+.person-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.person-card:hover .person-photo {
+  transform: scale(1.035);
+}
+
+/* Info block */
+.person-info {
+  padding: 14px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.person-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--black);
+  letter-spacing: -0.01em;
+}
+
+.person-role {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--grey-mid);
+  letter-spacing: 0.02em;
+  /* gap between role and the toggle / bio below */
+  margin-bottom: 10px;
+}
+
+/* Bio wrapper — overflow clips the text, height set by JS in px so
+   the transition is perfectly symmetric in both directions */
+.person-bio-wrap {
+  overflow: hidden;
+  transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.person-bio {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--grey-soft);
+  line-height: 1.8;
+  padding-bottom: 6px;
+}
+
+/* ... button — big, centered, feels like part of the text */
+.person-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--grey-soft);
+  transition: color 0.2s;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 0.1em;
+  display: block;
+}
+
+/* "−" when open — same size as ..., feels like a natural swap */
+.person-toggle.person-toggle-open {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--grey-soft);
+  letter-spacing: 0.1em;
+  text-transform: none;
+  margin-top: 0;
+}
+
+.person-toggle:hover {
+  color: var(--black);
+}
+
+/* ---- RESPONSIVE ---- */
+
+/* Tablet: 2 columns */
+@media (max-width: 900px) {
+  .people-main { padding: 0 40px 72px; }
+  .people-grid  { grid-template-columns: repeat(2, 1fr); gap: 36px 24px; }
+  .people-heading { font-size: 36px; }
+}
+
+/* Mobile: 2 tight columns */
+@media (max-width: 700px) {
+  .people-main { padding: 0 24px 60px; }
+  .people-header { padding: 40px 0 36px; }
+  .people-heading { font-size: 30px; }
+  .people-quote { font-size: 14px; }
+  .people-grid  { grid-template-columns: repeat(2, 1fr); gap: 28px 16px; }
+  .person-bio   { font-size: 12px; }
+}
+
+/* Very small screens: single column */
+@media (max-width: 420px) {
+  .people-grid { grid-template-columns: 1fr; }
+}

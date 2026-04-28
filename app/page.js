@@ -26,9 +26,9 @@ export default async function Page() {
               <span className="cur-label">Where I am</span>
               <span className="cur-value">Vancouver</span>
               <span className="cur-label">What I am reading</span>
-              <span className="cur-value">Text Messages</span>
+              <span className="cur-value">...nothing rn</span>
               <span className="cur-label">What I am doing</span>
-              <span className="cur-value">Studying for finals inside all the time</span>
+              <span className="cur-value">Enjoying summer and free time</span>
             </div>
           </div>
         </div>
