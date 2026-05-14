@@ -23,12 +23,12 @@ export function StoriesContent() {
           fetch('/api/blogs'),
           fetch('/api/videos')
         ])
-        
-        const blogs = await blogRes.json()
-        const vids = await videoRes.json()
-        
-        setSubstackPosts(blogs)
-        setLiveVideos(vids)
+
+        const blogs = blogRes.ok ? await blogRes.json() : []
+        const vids = videoRes.ok ? await videoRes.json() : []
+
+        setSubstackPosts(Array.isArray(blogs) ? blogs : [])
+        setLiveVideos(Array.isArray(vids) ? vids : [])
       } catch (err) {
         console.error("Error loading content:", err)
       } finally {
@@ -110,7 +110,7 @@ export function StoriesContent() {
                    src={`https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1&mute=1&rel=0`}
                    allow="autoplay; encrypted-media"
                    allowFullScreen
-                   frameBorder="0"
+                   style={{ border: 0 }}
                  ></iframe>
               </div>
             </div>
@@ -133,7 +133,7 @@ export function StoriesContent() {
           {/* List of Titles - Shows as a sub-list when content is selected */}
 {active && (
   <div className={`content-list ${selectedVideo || selectedBlog ? 'sub-list' : ''}`}>
-    {loading && substackPosts.length === 0 ? (
+    {loading && substackPosts.length === 0 && liveVideos.length === 0 ? (
       <p>Loading stories...</p>
     ) : (
       displayList.map((item, i) => (

@@ -6,11 +6,18 @@ import { getYouTubeVideos } from '../lib/getVideos'
 import { getSubstackPosts } from '../lib/getBlogs' // Add this line
 
 export default async function Page() {
-  const videoData = await getYouTubeVideos();
-   // 2. Target the videos array inside the object to use slice
-   const topVideos = (videoData.videos || []).slice(0, 3);
-  const allPosts = await getSubstackPosts();
-  const recentPosts = allPosts.slice(0, 3); // This picks the top 3 most recent posts from Substack
+  let topVideos = [];
+  let recentPosts = [];
+
+  try {
+    const videoData = await getYouTubeVideos();
+    topVideos = (videoData.videos || []).slice(0, 3);
+  } catch {}
+
+  try {
+    const allPosts = await getSubstackPosts();
+    recentPosts = allPosts.slice(0, 3);
+  } catch {}
   return (
     <>
       <Nav />
@@ -26,9 +33,9 @@ export default async function Page() {
               <span className="cur-label">Where I am</span>
               <span className="cur-value">Vancouver</span>
               <span className="cur-label">What I am reading</span>
-              <span className="cur-value">...nothing rn</span>
+              <span className="cur-value">Dopamine Nation by Anna Lembke</span>
               <span className="cur-label">What I am doing</span>
-              <span className="cur-value">Enjoying summer and free time</span>
+              <span className="cur-value">Growing Wygo</span>
             </div>
           </div>
         </div>

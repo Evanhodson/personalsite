@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Nav from '../../components/Nav';
-import Contact from '../../components/Contact';
 
 /* ============================================================
    PEOPLE DATA — add / edit entries here.
@@ -59,7 +58,7 @@ const people = [
 // 3 lines × 1.8 line-height × 13px font-size
 const PREVIEW_HEIGHT = Math.round(13 * 1.8 * 3);
 
-function PersonCard({ person, index }) {
+function PersonCard({ person }) {
   const [open, setOpen] = useState(false);
   const bioRef = useRef(null);
   const [fullHeight, setFullHeight] = useState(PREVIEW_HEIGHT);
@@ -72,10 +71,7 @@ function PersonCard({ person, index }) {
   }, []);
 
   return (
-    <article
-      className="person-card"
-      style={{ animationDelay: `${index * 0.07}s` }}
-    >
+    <article className="person-card">
       <div className="person-photo-wrap">
         <img
           src={person.photo}
@@ -119,7 +115,7 @@ export default function PeoplePage() {
     <>
       <Nav />
 
-      <main className="people-main page-enter">
+      <main className="people-main">
         <header className="people-header">
           <h1 className="people-heading">The People</h1>
           <p className="people-quote">
@@ -128,6 +124,8 @@ export default function PeoplePage() {
           <p className="people-sub">These are the ones who built me.</p>
         </header>
 
+        <p className="people-wip">Work in progress — check back soon.</p>
+
         <section className="people-grid">
           {people.map((person, i) => (
             <PersonCard key={person.name} person={person} index={i} />
@@ -135,7 +133,7 @@ export default function PeoplePage() {
         </section>
       </main>
 
-      <Contact />
+      
     </>
   );
 }

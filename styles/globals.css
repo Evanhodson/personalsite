@@ -5,7 +5,7 @@
 
 /* # FONTS
    ---------------------------------------------------------- */
-   @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap');
 
 
    /* # TOKENS
@@ -24,7 +24,6 @@
      --accent-cool:  #6C8CA0;  /* slate blue  – vlogs                  */
      --accent-green: #7A9C7A;  /* sage        – other                  */
    
-     --font-serif: 'Lora', Georgia, serif;
      --font-sans:  'DM Sans', -apple-system, sans-serif;
    }
    
@@ -62,7 +61,7 @@
    }
    
    .nav-logo {
-     font-family: var(--font-serif);
+     font-family: var(--font-sans);
      font-size: 17px;
      font-style: italic;
      font-weight: 400;
@@ -379,7 +378,7 @@
    }
    
    .contact-heading {
-     font-family: var(--font-serif);
+     font-family: var(--font-sans);
      font-size: 22px;
      font-weight: 400;
      letter-spacing: -0.01em;
@@ -851,7 +850,7 @@
      }
      
      .books-heading {
-       font-family: var(--font-serif);
+       font-family: var(--font-sans);
        font-size: 32px;
        font-weight: 400;
        font-style: italic;
@@ -1126,7 +1125,7 @@
 }
 
 .people-heading {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 42px;
   font-weight: 400;
   font-style: italic;
@@ -1136,7 +1135,7 @@
 }
 
 .people-quote {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 15px;
   font-style: italic;
   color: var(--grey-soft);
@@ -1165,13 +1164,14 @@
 .person-card {
   display: flex;
   flex-direction: column;
-  opacity: 0;
-  animation: personFadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-@keyframes personFadeUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
+.people-wip {
+  font-size: 13px;
+  color: var(--grey-mid);
+  text-align: center;
+  padding: 10px 0 32px;
+  letter-spacing: 0.02em;
 }
 
 /* Photo */
