@@ -2,6 +2,11 @@
 
 import '../styles/globals.css'
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export const metadata = {
   title: 'Evan',
   description: "Hi I'm Evan. I do things.",
