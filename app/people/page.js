@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from 'react';
 import Nav from '../../components/Nav';
 
+// Flip to false when the page is ready to go live
+const WIP = true
+
 /* ============================================================
    PEOPLE DATA — add / edit entries here.
    Each person needs:
@@ -116,21 +119,25 @@ export default function PeoplePage() {
       <Nav />
 
       <main className="people-main">
-        <header className="people-header">
-          <h1 className="people-heading">The People</h1>
-          <p className="people-quote">
-            &ldquo;You are the average of the five people<br />you spend the most time with.&rdquo;
-          </p>
-          <p className="people-sub">These are the ones who built me.</p>
-        </header>
+        {WIP ? (
+          <p className="people-wip">Work in progress — check back soon.</p>
+        ) : (
+          <>
+            <header className="people-header">
+              <h1 className="people-heading">The People</h1>
+              <p className="people-quote">
+                &ldquo;You are the average of the five people<br />you spend the most time with.&rdquo;
+              </p>
+              <p className="people-sub">These are the ones who built me.</p>
+            </header>
 
-        <p className="people-wip">Work in progress — check back soon.</p>
-
-        <section className="people-grid">
-          {people.map((person, i) => (
-            <PersonCard key={person.name} person={person} index={i} />
-          ))}
-        </section>
+            <section className="people-grid">
+              {people.map((person) => (
+                <PersonCard key={person.name} person={person} />
+              ))}
+            </section>
+          </>
+        )}
       </main>
 
       
