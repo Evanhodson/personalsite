@@ -120,7 +120,7 @@ export default function PeoplePage() {
 
       <main className="people-main">
         {WIP ? (
-          <p className="people-wip">Work in progress — check back soon.</p>
+          <p className="people-wip">work in progress</p>
         ) : (
           <>
             <header className="people-header">

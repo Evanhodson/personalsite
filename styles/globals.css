@@ -14,7 +14,7 @@
      --black:        #111111;
      --white:        #FFFFFF;
      --grey-light:   #EAEAEA;
-     --grey-mid:     #999999;
+     --grey-mid:     #777777;
      --grey-soft:    #666666;
      --grey-faint:   #F5F5F3;
      --bg-subtle:    #FAFAF8;
@@ -58,6 +58,10 @@
      justify-content: space-between;
      align-items: center;
      padding: 22px 60px;
+     position: sticky;
+     top: 0;
+     z-index: 100;
+     background: var(--white);
    }
    
    .nav-logo {
@@ -1112,6 +1116,10 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 60px 80px;
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Header */
@@ -1164,11 +1172,10 @@
 }
 
 .people-wip {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--grey-mid);
   text-align: center;
-  padding: 10px 0 32px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
 /* Photo */
