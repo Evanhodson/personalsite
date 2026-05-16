@@ -16,6 +16,8 @@ const slides = [
   { src: '/images/ubchunt.jpg', alt: 'this is picture', caption: 'ran a 350+ person manhunt game with Evan' },
   { src: '/images/storm2.JPG', alt: 'this is picture', caption: 'won ultra iron storm the wall and raced with my friends' },
   { src: '/images/texxmc.JPEG', alt: 'this is picture', caption: 'emceed a tedx event at ubc' },
+  { src: '/images/road1.jpg', alt: 'this is picture', caption: 'drove across America on a road trip with Nick and Ernie' },
+
 ]
 
 export default function Slideshow() {
