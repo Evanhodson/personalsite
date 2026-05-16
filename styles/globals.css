@@ -63,8 +63,7 @@
    .nav-logo {
      font-family: var(--font-sans);
      font-size: 17px;
-     font-style: italic;
-     font-weight: 400;
+     font-weight: 500;
      color: var(--black);
    }
    
@@ -852,8 +851,7 @@
      .books-heading {
        font-family: var(--font-sans);
        font-size: 32px;
-       font-weight: 400;
-       font-style: italic;
+       font-weight: 500;
        color: var(--black);
        margin-bottom: 6px;
      }
@@ -1127,8 +1125,7 @@
 .people-heading {
   font-family: var(--font-sans);
   font-size: 42px;
-  font-weight: 400;
-  font-style: italic;
+  font-weight: 500;
   color: var(--black);
   margin-bottom: 20px;
   letter-spacing: -0.01em;
