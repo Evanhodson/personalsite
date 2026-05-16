@@ -4,31 +4,56 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Nav from '../../components/Nav'
 export function StoriesContent() {
-  const [active, setActive] = useState(null)
-  const [selectedVideo, setSelectedVideo] = useState(null)
-  const [liveVideos, setLiveVideos] = useState([])
-  const [substackPosts, setSubstackPosts] = useState([]) 
-  const [selectedBlog, setSelectedBlog] = useState(null) 
-  const [loading, setLoading] = useState(false)
-
   const searchParams = useSearchParams()
 
-  // Fetch Substack posts via Internal API
+  // Read URL params once so initial state is correct on first render —
+  // this prevents the Videos/Written buttons from ever flashing on screen
+  // when arriving from a direct link (home page vlogs/blogs).
+  const initialType = searchParams.get('type')
+  const initialId   = searchParams.get('id')
+
+  const [active, setActive] = useState(
+    initialType === 'videos' ? 'videos' : initialType === 'written' ? 'written' : null
+  )
+  // Pre-populate video with the id from the URL so the iframe loads immediately
+  const [selectedVideo, setSelectedVideo] = useState(
+    initialType === 'videos' && initialId ? { id: initialId, title: '', date: '' } : null
+  )
+  const [selectedBlog, setSelectedBlog] = useState(null)
+  const [liveVideos, setLiveVideos] = useState([])
+  const [substackPosts, setSubstackPosts] = useState([])
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     const loadContent = async () => {
       setLoading(true)
       try {
-        // Fetch both at once
         const [blogRes, videoRes] = await Promise.all([
           fetch('/api/blogs'),
           fetch('/api/videos')
         ])
 
         const blogs = blogRes.ok ? await blogRes.json() : []
-        const vids = videoRes.ok ? await videoRes.json() : []
+        const vids  = videoRes.ok ? await videoRes.json() : []
 
-        setSubstackPosts(Array.isArray(blogs) ? blogs : [])
-        setLiveVideos(Array.isArray(vids) ? vids : [])
+        const blogsArr = Array.isArray(blogs) ? blogs : []
+        const vidsArr  = Array.isArray(vids)  ? vids  : []
+
+        setSubstackPosts(blogsArr)
+        setLiveVideos(vidsArr)
+
+        // Once data is loaded, hydrate the pre-selected items with full data
+        const type = searchParams.get('type')
+        const id   = searchParams.get('id')
+        const slug = searchParams.get('slug')
+
+        if (type === 'videos' && id) {
+          const found = vidsArr.find(v => v.id === id)
+          if (found) setSelectedVideo(found)
+        } else if (type === 'written' && slug) {
+          const found = blogsArr.find(p => p.slug === slug)
+          if (found) setSelectedBlog(found)
+        }
       } catch (err) {
         console.error("Error loading content:", err)
       } finally {
@@ -36,24 +61,7 @@ export function StoriesContent() {
       }
     }
     loadContent()
-  }, [])
-
-  useEffect(() => {
-    const type = searchParams.get('type')
-    const id = searchParams.get('id')
-    const slug = searchParams.get('slug')
-
-    if (type === 'videos' && id) {
-      setActive('videos')
-      // Change 'videos' to 'liveVideos'
-      const found = liveVideos.find(v => v.id === id)
-      if (found) setSelectedVideo(found)
-    } else if (type === 'written' && slug) {
-      setActive('written')
-      const foundBlog = substackPosts.find(p => p.slug === slug)
-      if (foundBlog) setSelectedBlog(foundBlog)
-    }
-  }, [searchParams, substackPosts, liveVideos]) // Added liveVideos here
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBack = () => {
     if (selectedVideo) setSelectedVideo(null)
