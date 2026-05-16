@@ -33,7 +33,7 @@ export default function Contact() {
       <p className="contact-sub"> Questions, thoughts, anything</p>
 
       {status === 'sent' ? (
-        <p className="contact-sub">Sent — I&apos;ll get back to you soon.</p>
+        <p className="contact-sub">Sent, I&apos;ll get back to you soon</p>
       ) : (
         <form className="contact-form" onSubmit={handleSubmit}>
           <div className="form-group">

@@ -24,6 +24,7 @@ export function StoriesContent() {
   const [substackPosts, setSubstackPosts] = useState([])
   const [loading, setLoading] = useState(false)
 
+  // Fetch data once on mount
   useEffect(() => {
     const loadContent = async () => {
       setLoading(true)
@@ -32,28 +33,10 @@ export function StoriesContent() {
           fetch('/api/blogs'),
           fetch('/api/videos')
         ])
-
         const blogs = blogRes.ok ? await blogRes.json() : []
         const vids  = videoRes.ok ? await videoRes.json() : []
-
-        const blogsArr = Array.isArray(blogs) ? blogs : []
-        const vidsArr  = Array.isArray(vids)  ? vids  : []
-
-        setSubstackPosts(blogsArr)
-        setLiveVideos(vidsArr)
-
-        // Once data is loaded, hydrate the pre-selected items with full data
-        const type = searchParams.get('type')
-        const id   = searchParams.get('id')
-        const slug = searchParams.get('slug')
-
-        if (type === 'videos' && id) {
-          const found = vidsArr.find(v => v.id === id)
-          if (found) setSelectedVideo(found)
-        } else if (type === 'written' && slug) {
-          const found = blogsArr.find(p => p.slug === slug)
-          if (found) setSelectedBlog(found)
-        }
+        setSubstackPosts(Array.isArray(blogs) ? blogs : [])
+        setLiveVideos(Array.isArray(vids)  ? vids  : [])
       } catch (err) {
         console.error("Error loading content:", err)
       } finally {
@@ -61,7 +44,33 @@ export function StoriesContent() {
       }
     }
     loadContent()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Sync state with URL params on every navigation (including soft nav back to /stories).
+  // Without this, navigating away and back keeps the old video/blog loaded.
+  useEffect(() => {
+    const type = searchParams.get('type')
+    const id   = searchParams.get('id')
+    const slug = searchParams.get('slug')
+
+    if (!type) {
+      setActive(null)
+      setSelectedVideo(null)
+      setSelectedBlog(null)
+      return
+    }
+    if (type === 'videos' && id) {
+      setActive('videos')
+      setSelectedBlog(null)
+      const found = liveVideos.find(v => v.id === id)
+      setSelectedVideo(found || { id, title: '', date: '' })
+    } else if (type === 'written' && slug) {
+      setActive('written')
+      setSelectedVideo(null)
+      const found = substackPosts.find(p => p.slug === slug)
+      if (found) setSelectedBlog(found)
+    }
+  }, [searchParams, liveVideos, substackPosts]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBack = () => {
     if (selectedVideo) setSelectedVideo(null)
