@@ -5,28 +5,26 @@ import Image from 'next/image'
 import Nav from '../../components/Nav'
 import { photos } from '../../lib/photos'
 
+const WIP = true
+
 export default function PhotosPage() {
-  const [lightbox, setLightbox] = useState(null) // index of open photo
+  const [lightbox, setLightbox] = useState(null)
 
   const prev = () => setLightbox(i => (i - 1 + photos.length) % photos.length)
   const next = () => setLightbox(i => (i + 1) % photos.length)
 
   // Lock body scroll while lightbox is open
   useEffect(() => {
-    if (lightbox !== null) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
+    document.body.style.overflow = lightbox !== null ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [lightbox])
 
-  // Close on Escape key
+  // Keyboard nav
   useEffect(() => {
     const onKey = e => {
-      if (e.key === 'Escape') setLightbox(null)
-      if (e.key === 'ArrowLeft') setLightbox(i => i !== null ? (i - 1 + photos.length) % photos.length : null)
-      if (e.key === 'ArrowRight') setLightbox(i => i !== null ? (i + 1) % photos.length : null)
+      if (e.key === 'Escape')      setLightbox(null)
+      if (e.key === 'ArrowLeft')   setLightbox(i => i !== null ? (i - 1 + photos.length) % photos.length : null)
+      if (e.key === 'ArrowRight')  setLightbox(i => i !== null ? (i + 1) % photos.length : null)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -34,8 +32,7 @@ export default function PhotosPage() {
 
   return (
     <>
-      {/* page-enter has transform: translateY(0) from its animation (fill-mode: both),
-          which would break position:fixed on the lightbox — so lightbox lives outside. */}
+      {/* Lightbox is outside page-enter to avoid transform breaking position:fixed */}
       <div className="page-enter">
         <Nav />
         <main className="photos-main">
@@ -43,7 +40,9 @@ export default function PhotosPage() {
             <h1 className="photos-heading">Photos</h1>
           </div>
 
-          {photos.length === 0 ? (
+          {WIP ? (
+            <p className="photos-wip">work in progress</p>
+          ) : photos.length === 0 ? (
             <p className="photos-empty">No photos yet.</p>
           ) : (
             <div className="photos-grid">
@@ -59,10 +58,9 @@ export default function PhotosPage() {
                     width={800}
                     height={600}
                     sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                    priority={i < 3}
-                    placeholder="blur"
-                    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
-                    className="photo-img"
+                    priority={i < 4}
+                    className="photo-img photo-img--loading"
+                    onLoad={e => e.currentTarget.classList.remove('photo-img--loading')}
                     style={{ width: '100%', height: 'auto' }}
                   />
                   {photo.caption && (
@@ -75,8 +73,8 @@ export default function PhotosPage() {
         </main>
       </div>
 
-      {/* Lightbox — outside page-enter so position:fixed is relative to viewport */}
-      {lightbox !== null && (
+      {/* Lightbox */}
+      {lightbox !== null && !WIP && (
         <div className="lightbox" onClick={() => setLightbox(null)}>
           <button className="lightbox-close" onClick={() => setLightbox(null)}>×</button>
           <button className="lightbox-prev" onClick={e => { e.stopPropagation(); prev() }}>‹</button>

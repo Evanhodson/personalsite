@@ -1104,10 +1104,19 @@
      color: var(--black);
    }
 
-   .photos-empty {
+   .photos-empty,
+   .photos-wip {
      font-size: 15px;
      font-weight: 300;
      color: var(--grey-mid);
+   }
+
+   /* Fade images in when they finish loading instead of popping in */
+   .photo-img {
+     transition: opacity 0.3s ease;
+   }
+   .photo-img--loading {
+     opacity: 0;
    }
 
    /* Masonry columns — photos flow in, no JS, no rearranging */
@@ -1230,6 +1239,12 @@
      max-width: 640px;
      margin: 0 auto;
      padding: 56px 60px 100px;
+   }
+
+   .now-wip {
+     font-size: 15px;
+     font-weight: 300;
+     color: var(--grey-mid);
    }
 
    .now-header {
