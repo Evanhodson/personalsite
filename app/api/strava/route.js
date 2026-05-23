@@ -12,14 +12,26 @@ async function getAccessToken() {
       refresh_token: process.env.STRAVA_REFRESH_TOKEN,
       grant_type: 'refresh_token',
     }),
-    cache: 'no-store', // always get a fresh token
+    cache: 'no-store',
   })
   const data = await res.json()
-  if (!data.access_token) throw new Error('Token exchange failed')
+  if (!data.access_token) {
+    throw new Error(`Token exchange failed: ${data.message || data.error || JSON.stringify(data)}`)
+  }
   return data.access_token
 }
 
 export async function GET() {
+  // Sanity-check env vars are present
+  if (!process.env.STRAVA_CLIENT_ID || !process.env.STRAVA_CLIENT_SECRET || !process.env.STRAVA_REFRESH_TOKEN) {
+    console.error('Strava env vars missing', {
+      hasClientId: !!process.env.STRAVA_CLIENT_ID,
+      hasSecret: !!process.env.STRAVA_CLIENT_SECRET,
+      hasRefresh: !!process.env.STRAVA_REFRESH_TOKEN,
+    })
+    return NextResponse.json({ error: 'Strava credentials not configured' }, { status: 500 })
+  }
+
   try {
     const token = await getAccessToken()
 
@@ -44,7 +56,7 @@ export async function GET() {
       { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } }
     )
   } catch (err) {
-    console.error('Strava API error:', err)
-    return NextResponse.json({ error: 'Failed to fetch Strava data' }, { status: 500 })
+    console.error('Strava API error:', err.message)
+    return NextResponse.json({ error: err.message }, { status: 500 })
   }
 }
