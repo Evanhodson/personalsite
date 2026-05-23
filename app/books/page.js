@@ -10,7 +10,7 @@ export default function BooksPage() {
       <Nav />
       <main className="books-main">
         <div className="books-header">
-          <h1 className="books-heading">books i've read</h1>
+          <h1 className="books-heading">books I've read</h1>
           <p className="books-sub"> I read books sometimes. Here are my thoughts about some I've read.</p>
         </div>
         <BooksTable books={books} />

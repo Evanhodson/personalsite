@@ -1,11 +1,15 @@
 // app/page.js
-import Nav from '../components/Nav' // Fixed: Correct import
+import Link from 'next/link'
+import Nav from '../components/Nav'
 import Slideshow from '../components/Slideshow'
 import Contact from '../components/Contact'
+import UpdatedAt from '../components/UpdatedAt'
 import { getYouTubeVideos } from '../lib/getVideos'
-import { getSubstackPosts } from '../lib/getBlogs' // Add this line
+import { getSubstackPosts } from '../lib/getBlogs'
+import { currently } from '../lib/currently'
 
 export default async function Page() {
+  const currentlyUpdatedAt = process.env.CURRENTLY_UPDATED_AT;
   let topVideos = [];
   let recentPosts = [];
 
@@ -28,15 +32,16 @@ export default async function Page() {
             <br />I do things.
           </h1>
           <div className="currently">
-            <p className="currently-title">Currently...</p>
+            <Link href="/now" className="currently-title currently-title-link">Currently...</Link>
             <div className="cur-grid">
               <span className="cur-label">Where I am</span>
-              <span className="cur-value">Vancouver</span>
+              <span className="cur-value">{currently.where}</span>
               <span className="cur-label">What I am reading</span>
-              <span className="cur-value">Dopamine Nation by Anna Lembke</span>
+              <span className="cur-value">{currently.reading}</span>
               <span className="cur-label">What I am doing</span>
-              <span className="cur-value">Growing Wygo</span>
+              <span className="cur-value">{currently.doing}</span>
             </div>
+            <UpdatedAt timestamp={currentlyUpdatedAt} />
           </div>
         </div>
         <div className="hero-right">

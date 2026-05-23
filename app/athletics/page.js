@@ -4,14 +4,80 @@ import { motion } from 'framer-motion';
 import Nav from '../../components/Nav.js';
 import { athletics } from '../../lib/data.js';
 
+// ── Strava formatting helpers ──────────────────────────────────────────────
+function metersToMiles(m) { return (m / 1609.34).toFixed(1) }
+function metersToYards(m) { return Math.round(m * 1.09361).toLocaleString() }
+function secondsToHM(s) {
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  return h > 0 ? `${h}h ${m}m` : `${m}m`
+}
+function runPace(distM, timeS) {
+  const secPerMile = timeS / (distM / 1609.34)
+  const min = Math.floor(secPerMile / 60)
+  const sec = Math.round(secPerMile % 60)
+  return `${min}:${String(sec).padStart(2, '0')}/mi`
+}
+function swimPace(distM, timeS) {
+  const yards = distM * 1.09361
+  const secPer100 = timeS / (yards / 100)
+  const min = Math.floor(secPer100 / 60)
+  const sec = Math.round(secPer100 % 60)
+  return `${min}:${String(sec).padStart(2, '0')}/100yd`
+}
+function rideSpeed(distM, timeS) {
+  return `${((distM / 1609.34) / (timeS / 3600)).toFixed(1)} mph`
+}
+function activityDate(iso) {
+  const d = new Date(iso)
+  return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}-${String(d.getFullYear()).slice(2)}`
+}
+function sportLabel(type) {
+  const map = {
+    Run: 'RUN', TrailRun: 'TRAIL', VirtualRun: 'RUN',
+    Swim: 'SWIM', OpenWaterSwim: 'OW_SWIM',
+    Ride: 'RIDE', VirtualRide: 'V_RIDE', GravelRide: 'GRAVEL',
+    Walk: 'WALK', Hike: 'HIKE',
+    WeightTraining: 'LIFT', Workout: 'WKT', Yoga: 'YOGA',
+  }
+  return map[type] || type.toUpperCase().slice(0, 6)
+}
+function activityDist(act) {
+  if (!act.distance) return '—'
+  const t = act.sport_type || act.type
+  return t.toLowerCase().includes('swim')
+    ? `${metersToYards(act.distance)} yd`
+    : `${metersToMiles(act.distance)} mi`
+}
+function activityPace(act) {
+  if (!act.distance || !act.moving_time) return '—'
+  const t = act.sport_type || act.type
+  if (t.toLowerCase().includes('run')) return runPace(act.distance, act.moving_time)
+  if (t.toLowerCase().includes('swim')) return swimPace(act.distance, act.moving_time)
+  if (t.toLowerCase().includes('ride')) return rideSpeed(act.distance, act.moving_time)
+  return secondsToHM(act.moving_time)
+}
+
 export default function AthleticsPage() {
   const [daysUntil, setDaysUntil] = useState(0);
+  const [strava, setStrava] = useState(null);
+  const [stravaErr, setStravaErr] = useState(false);
 
   useEffect(() => {
     const raceDate = new Date(athletics.events[0].date);
     const now = new Date();
     const diff = Math.ceil((raceDate - now) / (1000 * 60 * 60 * 24));
     setDaysUntil(diff);
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/strava')
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) setStravaErr(true)
+        else setStrava(data)
+      })
+      .catch(() => setStravaErr(true))
   }, []);
 
   return (
@@ -42,6 +108,7 @@ export default function AthleticsPage() {
               <tr>
                 <th>EVENT</th>
                 <th>SCM</th>
+                <th>DATE</th>
                 <th>LCM</th>
                 <th>DATE</th>
               </tr>
@@ -51,8 +118,9 @@ export default function AthleticsPage() {
                 <tr key={i}>
                   <td>{s.event}</td>
                   <td className="accent">{s.scm}</td>
+                  <td className="dim">{s.scmDate}</td>
                   <td className="accent">{s.lcm}</td>
-                  <td className="dim">{s.date}</td>
+                  <td className="dim">{s.lcmDate}</td>
                 </tr>
               ))}
             </tbody>
@@ -105,7 +173,82 @@ export default function AthleticsPage() {
           </table>
         </section>
 
-        
+        {/* Strava YTD Totals */}
+        <section className="data-section">
+          <h2>[04] YTD_TOTALS</h2>
+          {stravaErr ? (
+            <p className="strava-status">UNAVAILABLE</p>
+          ) : !strava ? (
+            <p className="strava-status">FETCHING...</p>
+          ) : (
+            <table className="pr-table">
+              <thead>
+                <tr>
+                  <th>SPORT</th>
+                  <th>ACTIVITIES</th>
+                  <th>DISTANCE</th>
+                  <th>TIME</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RUN</td>
+                  <td className="accent">{strava.stats.ytd_run_totals?.count ?? '—'}</td>
+                  <td className="accent">{strava.stats.ytd_run_totals?.distance ? `${metersToMiles(strava.stats.ytd_run_totals.distance)} mi` : '—'}</td>
+                  <td className="dim">{strava.stats.ytd_run_totals?.moving_time ? secondsToHM(strava.stats.ytd_run_totals.moving_time) : '—'}</td>
+                </tr>
+                <tr>
+                  <td>SWIM</td>
+                  <td className="accent">{strava.stats.ytd_swim_totals?.count ?? '—'}</td>
+                  <td className="accent">{strava.stats.ytd_swim_totals?.distance ? `${metersToYards(strava.stats.ytd_swim_totals.distance)} yd` : '—'}</td>
+                  <td className="dim">{strava.stats.ytd_swim_totals?.moving_time ? secondsToHM(strava.stats.ytd_swim_totals.moving_time) : '—'}</td>
+                </tr>
+                <tr>
+                  <td>RIDE</td>
+                  <td className="accent">{strava.stats.ytd_ride_totals?.count ?? '—'}</td>
+                  <td className="accent">{strava.stats.ytd_ride_totals?.distance ? `${metersToMiles(strava.stats.ytd_ride_totals.distance)} mi` : '—'}</td>
+                  <td className="dim">{strava.stats.ytd_ride_totals?.moving_time ? secondsToHM(strava.stats.ytd_ride_totals.moving_time) : '—'}</td>
+                </tr>
+              </tbody>
+            </table>
+          )}
+        </section>
+
+        {/* Strava Recent Activity */}
+        <section className="data-section">
+          <h2>[05] RECENT_ACTIVITY</h2>
+          {stravaErr ? (
+            <p className="strava-status">UNAVAILABLE</p>
+          ) : !strava ? (
+            <p className="strava-status">FETCHING...</p>
+          ) : !Array.isArray(strava.activities) || strava.activities.length === 0 ? (
+            <p className="strava-status">NO ACTIVITIES</p>
+          ) : (
+            <table className="pr-table">
+              <thead>
+                <tr>
+                  <th>DATE</th>
+                  <th>TYPE</th>
+                  <th>NAME</th>
+                  <th>DIST</th>
+                  <th>PACE / SPEED</th>
+                </tr>
+              </thead>
+              <tbody>
+                {strava.activities.map((act, i) => (
+                  <tr key={i}>
+                    <td className="dim">{activityDate(act.start_date_local)}</td>
+                    <td className="accent">{sportLabel(act.sport_type || act.type)}</td>
+                    <td>{act.name}</td>
+                    <td>{activityDist(act)}</td>
+                    <td className="dim">{activityPace(act)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
+
       </main>
 
       <style jsx global>{`
@@ -229,9 +372,18 @@ td {
 }
 
 /* The Dates */
-.dim { 
-  color: #6b7280; /* Visible gray */
-  font-size: 0.8rem; 
+.dim {
+  color: #6b7280;
+  font-size: 0.8rem;
+  padding-right: 1.5rem;
+}
+
+/* Strava loading / error placeholder */
+.strava-status {
+  font-size: 0.75rem;
+  color: #4b5563;
+  letter-spacing: 2px;
+  padding: 8px 0;
 }
       `}</style>
     </motion.div>

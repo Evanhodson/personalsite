@@ -10,6 +10,7 @@ const links = [
   { href: '/books',    label: 'Books'   },
   { href: '/people',   label: 'People'  },
   { href: '/stories',  label: 'Stories' },
+  { href: '/photos',   label: 'Photos'  },
 ]
 
 export default function Nav() {
